@@ -1,0 +1,361 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Detail | John Doe</title>
+
+    <!-- Google Fonts: Poppins for a modern, clean look -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- CSS Reset & Global Styles --- */
+        :root {
+            --primary-color: #34d399; /* Emerald Green */
+            --background-color: #0f172a; /* Slate 900 */
+            --card-background: #1e293b; /* Slate 800 */
+            --text-color: #cbd5e1; /* Slate 300 - Light Grey */
+            --heading-color: #f1f5f9; /* Slate 100 - White */
+            --border-color: #334155; /* Slate 700 - Dark Grey */
+            --shadow-color: rgba(0, 0, 0, 0.2);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            cursor: none; /* Hide the default cursor */
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+        
+        main {
+            padding-top: 120px; /* Offset for fixed navbar */
+        }
+
+        .container {
+            max-width: 900px; /* More focused content area */
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        section {
+            padding: 2rem 0;
+        }
+
+        h1, h2, h3 {
+            font-weight: 600;
+            color: var(--heading-color);
+            margin-bottom: 1rem;
+        }
+
+        h1 { font-size: 3.5rem; text-align: center; margin-bottom: 0.5rem; }
+        h2 { font-size: 2rem; margin-top: 3rem; border-bottom: 2px solid var(--border-color); padding-bottom: 0.5rem; }
+        
+        p { margin-bottom: 1rem; }
+        a { color: var(--primary-color); text-decoration: none; transition: color 0.3s ease; }
+        a:hover { color: #6ee7b7; }
+
+        /* --- Custom Cursor --- */
+        .cursor-dot, .cursor-outline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            z-index: 9999;
+            pointer-events: none;
+            transition: transform 0.15s ease-out, opacity 0.2s ease;
+        }
+        .cursor-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--primary-color);
+        }
+        .cursor-outline {
+            width: 40px;
+            height: 40px;
+            border: 2px solid var(--primary-color);
+            opacity: 0.5;
+        }
+        .cursor-interact {
+            transform: translate(-50%, -50%) scale(1.5);
+            opacity: 0.7;
+        }
+        .cursor-interact-dot {
+             transform: translate(-50%, -50%) scale(0);
+        }
+
+
+        /* --- Header & Navigation --- */
+        .navbar {
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            background-color: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 0;
+        }
+
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .nav-logo-container { position: relative; }
+        .nav-logo { font-size: 1.5rem; font-weight: 700; color: var(--heading-color); padding: 0.5rem; }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: var(--card-background);
+            border-radius: 8px;
+            padding: 0.5rem 0;
+            list-style: none;
+            min-width: 200px;
+            box-shadow: 0 10px 20px var(--shadow-color);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+        }
+
+        .nav-logo-container:hover .dropdown-menu { opacity: 1; visibility: visible; transform: translateY(0); }
+        
+        .dropdown-menu li {
+            position: relative;
+        }
+
+        .dropdown-menu li a {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            color: var(--text-color);
+            white-space: nowrap;
+        }
+        .dropdown-menu li a:hover {
+            background-color: var(--border-color);
+            color: var(--heading-color);
+        }
+
+        .dropdown-menu ul {
+            position: absolute;
+            top: 0;
+            left: 100%;
+            display: none;
+        }
+        
+        .dropdown-menu li:hover > ul {
+            display: block;
+        }
+
+        a.has-submenu::after {
+            content: '›';
+            font-size: 1.5rem;
+        }
+
+        .nav-links { list-style: none; display: flex; gap: 2rem; }
+        .nav-links a { color: var(--text-color); font-weight: 400; position: relative; padding-bottom: 0.25rem; }
+        .nav-links a::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px; background-color: var(--primary-color); transition: width 0.3s ease-in-out; }
+        .nav-links a:hover::after { width: 100%; }
+
+        /* --- Project Detail Specific Styles --- */
+        .project-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .project-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-color);
+            max-width: 600px;
+            margin: 0 auto 2rem auto;
+        }
+        .project-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+        .btn {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: var(--background-color);
+            padding: 0.6rem 1.2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(52, 211, 153, 0.2);
+        }
+
+        .project-gallery {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .project-gallery img {
+            width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 10px 20px var(--shadow-color);
+        }
+        
+        .project-content ul {
+            list-style-position: inside;
+            padding-left: 1rem;
+        }
+        .project-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        /* --- Footer --- */
+        footer { text-align: center; padding: 2rem 0; background-color: var(--card-background); border-top: 1px solid var(--border-color); }
+        
+        /* --- Responsive Design --- */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+<!-- Custom Cursor Elements -->
+<div class="cursor-dot"></div>
+<div class="cursor-outline"></div>
+
+<nav class="navbar">
+    <div class="container">
+        <div class="nav-logo-container">
+            <a href="index.html" class="nav-logo">JD</a>
+            <ul class="dropdown-menu">
+                <li><a href="index.html">Main Page</a></li>
+                <li>
+                    <a href="index.html#fields" class="has-submenu">Fields of Expertise</a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="web-dev.html" class="has-submenu">Web Development</a>
+                            <ul class="dropdown-menu">
+                                <li><a href="project-detail.html">E-Commerce Platform</a></li>
+                                <li><a href="#">Task Management App</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="ai_ml.html" class="has-submenu">AI / Machine Learning</a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">Data Viz Dashboard</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="app_dev.html">App Development</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html#about">About</a></li>
+            <li><a href="index.html#fields">Expertise</a></li>
+            <li><a href="index.html#skills">Skills</a></li>
+            <li><a href="index.html#contact">Contact</a></li>
+        </ul>
+    </div>
+</nav>
+
+<main>
+    <div class="container">
+        <header class="project-header">
+            <h1>E-Commerce Platform</h1>
+            <p class="project-subtitle">A full-featured e-commerce site built with React, Node.js, and MongoDB.</p>
+            <div class="project-links">
+                <a href="#" class="btn">Live Demo</a>
+                <a href="#" class="btn btn-secondary">View on GitHub</a>
+            </div>
+        </header>
+
+        <section class="project-gallery">
+            <img src="https://placehold.co/1200x600/1e293b/f1f5f9?text=Main+Screenshot" alt="Project main screenshot" onerror="this.onerror=null;this.src='https://placehold.co/1200x600/1e293b/f1f5f9?text=Image+Error';">
+        </section>
+
+        <section class="project-content">
+            <h2>About The Project</h2>
+            <p>
+                This project is a comprehensive e-commerce solution designed to provide a seamless shopping experience. It includes robust features for both customers and administrators. The primary goal was to create a high-performance, secure, and scalable platform using the MERN stack. I focused on creating a clean user interface and an intuitive administrative dashboard for managing products, orders, and users.
+            </p>
+
+            <h2>Key Features</h2>
+            <ul>
+                <li>Full-featured shopping cart with quantity management.</li>
+                <li>Secure user authentication and profile management.</li>
+                <li>Product reviews and rating system.</li>
+                <li>Admin panel for product and order management.</li>
+                <li>Integration with Stripe for secure payment processing.</li>
+            </ul>
+
+            <h2>Technologies Used</h2>
+            <ul>
+                <li><strong>Front-End:</strong> React, Redux for state management, Axios for API calls.</li>
+                <li><strong>Back-End:</strong> Node.js, Express.js for the REST API.</li>
+                <li><strong>Database:</strong> MongoDB with Mongoose for data modeling.</li>
+                <li><strong>Authentication:</strong> JSON Web Tokens (JWT).</li>
+                <li><strong>Deployment:</strong> Hosted on a cloud platform with CI/CD pipeline.</li>
+            </ul>
+        </section>
+    </div>
+</main>
+
+<footer>
+    <div class="container"><p>&copy; 2024 John Doe. All Rights Reserved.</p></div>
+</footer>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const cursorDot = document.querySelector('.cursor-dot');
+        const cursorOutline = document.querySelector('.cursor-outline');
+        window.addEventListener('mousemove', (e) => {
+            const posX = e.clientX;
+            const posY = e.clientY;
+            cursorDot.style.left = `${posX}px`;
+            cursorDot.style.top = `${posY}px`;
+            cursorOutline.animate({
+                left: `${posX}px`,
+                top: `${posY}px`
+            }, { duration: 500, fill: "forwards" });
+        });
+        const interactiveElements = document.querySelectorAll('a, button');
+        interactiveElements.forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursorOutline.classList.add('cursor-interact');
+                cursorDot.classList.add('cursor-interact-dot');
+            });
+            el.addEventListener('mouseleave', () => {
+                cursorOutline.classList.remove('cursor-interact');
+                cursorDot.classList.remove('cursor-interact-dot');
+            });
+        });
+    });
+</script>
+</body>
+</html>
